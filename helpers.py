@@ -21,7 +21,9 @@ def load_binary(filename, **kwargs):
 
 # A bit of sugar coating for easy loading of data from files
 def load_dataset(dataset='training'):
-    np.random.seed(1337)  # For reproducibility purposes
+    import tensorflow as tf
+    tf.random.set_seed(9)
+    np.random.seed(19)  # For reproducibility purposes
     if dataset not in ['training', 'validate']:
         print('Error: dataset %s not valid. Only valid values = [training, validate]' % dataset)
         raise ValueError
@@ -53,18 +55,6 @@ def train_to_id4(train_type):
         'unknown': [0, 0, 0, 0]
     }
     return tt_lut[train_type]
-
-
-# Filter on specific features
-def filter_predictions(predictions, values, threshold, train_types):
-    tt = np.zeros_like(predictions[0])
-    for train_type in train_types:
-        tt += np.array(train_to_id5(train_type))
-    for prediction, value in zip(predictions, values):
-        if value > threshold:
-            p = np.zeros_like(prediction)
-
-        pass
 
 
 def plot_validation_history(logger, acc=None):
