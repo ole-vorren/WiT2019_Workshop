@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib
 import warnings
-from scipy.signal import resample
 
 
 warnings.simplefilter('ignore', category=FutureWarning)
@@ -69,12 +68,12 @@ def filter_predictions(predictions, values, threshold, train_types):
 
 
 def plot_validation_history(logger, acc=None):
-    val_acc = logger.history['val_acc'][-1]
+    val_acc = logger.history['val_accuracy'][-1]
     if acc is None:
         acc = val_acc
-    epochs = len(logger.history['val_acc'])
+    epochs = len(logger.history['val_accuracy'])
     plt.title('Accuracy over epochs')
-    plt.plot(logger.history['val_acc'])
+    plt.plot(logger.history['val_accuracy'])
     plt.plot([0, epochs], [val_acc, val_acc], ls='--')
     plt.legend(['validation accuracy history', 'validation accuracy = %.2f%%' % (100. * acc)])
     plt.xlabel('Epochs')
