@@ -2,9 +2,11 @@
 # The thought is that this should streamline the workshop a bit better, and avoiding tricky python specific code
 # for participants who might not be too familiar with Python but still have basic coding knowledge
 
+import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib
 import warnings
+from scipy.signal import resample
 
 
 warnings.simplefilter('ignore', category=FutureWarning)
@@ -20,6 +22,7 @@ def load_binary(filename, **kwargs):
 
 # A bit of sugar coating for easy loading of data from files
 def load_dataset(dataset='training'):
+    np.random.seed(1337)  # For reproducibility purposes
     if dataset not in ['training', 'validate']:
         print('Error: dataset %s not valid. Only valid values = [training, validate]' % dataset)
         raise ValueError
@@ -51,6 +54,33 @@ def train_to_id4(train_type):
         'unknown': [0, 0, 0, 0]
     }
     return tt_lut[train_type]
+
+
+# Filter on specific features
+def filter_predictions(predictions, values, threshold, train_types):
+    tt = np.zeros_like(predictions[0])
+    for train_type in train_types:
+        tt += np.array(train_to_id5(train_type))
+    for prediction, value in zip(predictions, values):
+        if value > threshold:
+            p = np.zeros_like(prediction)
+
+        pass
+
+
+def plot_validation_history(logger, acc=None):
+    val_acc = logger.history['val_acc'][-1]
+    if acc is None:
+        acc = val_acc
+    epochs = len(logger.history['val_acc'])
+    plt.title('Accuracy over epochs')
+    plt.plot(logger.history['val_acc'])
+    plt.plot([0, epochs], [val_acc, val_acc], ls='--')
+    plt.legend(['validation accuracy history', 'validation accuracy = %.2f%%' % (100. * acc)])
+    plt.xlabel('Epochs')
+    plt.ylim(0.0, 1.0)
+    plt.tight_layout()
+    plt.show()
 
 
 # A bit of syntax sugar for easy adjustment of plot sizes
